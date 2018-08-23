@@ -1,29 +1,37 @@
 // Demo.jsx
 import React from 'react';
+import propTypes from 'prop-types';
 import './style.css';
 import { changeAge, changeUser } from './actionCreate';
-import { reducer } from './reducer';
-import { createStore } from './redux';
-
-const store = createStore(reducer);
 
 export default class Demo extends React.Component{
-  state = {user: 'xxx', age: 'xxx'};
+  // 设置 context 状态值类型
+  static contextTypes = {
+    store: propTypes.object
+  };
+
+  constructor(props, context){
+    super(props, context);
+    // 获取store
+    this.store = context.store;
+    this.state = {user: 'xxx', age: 'xxx'};
+  }
+  
   componentDidMount(){
-    store.subscribe(this.update);
+    this.store.subscribe(this.update);
     this.update();
   }
 
   update = () => {
-    this.setState(store.getState());
+    this.setState(this.store.getState());
   }
 
   onChange = (e) => {
-    store.dispatch(changeUser(e.target.value));
+    this.store.dispatch(changeUser(e.target.value));
   }
 
   onClick = () => {
-    store.dispatch(changeAge());
+    this.store.dispatch(changeAge());
   }
 
   render(){
