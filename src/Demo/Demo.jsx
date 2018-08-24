@@ -1,9 +1,9 @@
 // Demo.jsx
 import React from 'react';
+import './style.css';
 // 导入 asyncChangeAge
 import { changeAge, changeUser, asyncChangeAge } from './actionCreate';
 import { connect } from './react-redux';
-import './style.css';
 
 const mapStateToProps = (state) => {
   return {user: state.user, age: state.age};
