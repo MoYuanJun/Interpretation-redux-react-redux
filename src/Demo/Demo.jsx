@@ -1,47 +1,39 @@
 // Demo.jsx
 import React from 'react';
-import propTypes from 'prop-types';
+// 导入 asyncChangeAge
+import { changeAge, changeUser, asyncChangeAge } from './actionCreate';
+import { connect } from './react-redux';
 import './style.css';
-import { changeAge, changeUser } from './actionCreate';
 
+const mapStateToProps = (state) => {
+  return {user: state.user, age: state.age};
+}
+
+// 添加 asyncChangeAge
+@connect(mapStateToProps, {changeAge, changeUser, asyncChangeAge})
 export default class Demo extends React.Component{
-  // 设置 context 状态值类型
-  static contextTypes = {
-    store: propTypes.object
-  };
-
-  constructor(props, context){
-    super(props, context);
-    // 获取store
-    this.store = context.store;
-    this.state = {user: 'xxx', age: 'xxx'};
-  }
-  
-  componentDidMount(){
-    this.store.subscribe(this.update);
-    this.update();
-  }
-
-  update = () => {
-    this.setState(this.store.getState());
-  }
-
   onChange = (e) => {
-    this.store.dispatch(changeUser(e.target.value));
+    this.props.changeUser(e.target.value);
   }
-
   onClick = () => {
-    this.store.dispatch(changeAge());
+      this.props.changeAge();
   }
-
+  // 点击事件
+  onClickAsync = () => {
+    this.props.asyncChangeAge();
+  }
   render(){
     return (
       <div>
-        <p>user: {this.state.user}, age: {this.state.age}</p>
+        <p>user: {this.props.user}, age: {this.props.age}</p>
         user: 
         <input type="text" className="input" onChange={this.onChange}/>
         &nbsp;
         <button className="btn" onClick={this.onClick}>年龄增长</button>
+        {/* 新增按钮 */}
+        <button className="btn" onClick={this.onClickAsync}>
+        	异步增长
+        </button>
       </div>
     );
   }
